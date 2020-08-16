@@ -40,7 +40,23 @@
 
     
 }
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.form-box .form-input select{
+    width: 100%;
+    height: 40px;
+    
+    border: none;
+    border-radius: 5px;
+    outline: none;
+    background: white;
+    padding-left: 45px;
 
+    
+}
 .form-box .form-input span{
     position: absolute;
     top: 8px;
