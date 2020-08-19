@@ -20,7 +20,7 @@ app.post("/post", (req, res,next) => {
     Code,
     DOB,
   } = req.body;
-  console.log(req.body)
+
   mysqlConnection.query(
     `Select * from course_code where promo_code="${Code}"`,
     (error, result, fields) => {
