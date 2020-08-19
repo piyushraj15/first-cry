@@ -8,7 +8,7 @@ var mysqlConnection = mysql.createConnection({
   database: process.env.DB, 
   multipleStatements: true,
 });
-console.log(process.env)
+
 mysqlConnection.connect((err)=>{
   if(err){
     console.log("ahhhhhsa")
