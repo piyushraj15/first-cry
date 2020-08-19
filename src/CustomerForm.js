@@ -10,11 +10,12 @@ import {FaLandmark} from 'react-icons/fa'
 import {RiLockPasswordLine} from 'react-icons/ri'
 import {AiFillWarning} from 'react-icons/ai'
 import countryList from 'react-select-country-list'
+import Axios from 'axios'
 const country= countryList().data
-console.log(country)
-const postUrl="http://localhost:2000/add";
+const port=process.env.PORT || "http://localhost:3002"
+const postUrl=`${port}/post`;
 const classes=[1,2,3,4,5,6,7,8,9,10,11,12];
-console.log(classes)
+
 class Form extends Component {
   state={
       form:{
@@ -64,7 +65,7 @@ class Form extends Component {
                 formValid.ParentNameValid = false
                 formErrorMessage.ParentNameError = "Field Required"
             }
-            else if (!value.match(/^[A-Za-z]{1,15}$/)) {
+            else if (!value.match(/^[A-Za-z " "]{1,15}$/)) {
                 formValid.ParentNameValid = false
                 formErrorMessage.ParentNameError = "Please enter a valid ParentName"
             }
@@ -78,7 +79,7 @@ class Form extends Component {
                 formValid.ChildNameValid = false
                 formErrorMessage.ChildNameError = "Field Required"
             }
-            else if (!value.match(/^[A-Za-z]{1,15}$/)) {
+            else if (!value.match(/^[A-Za-z " "]{1,15}$/)) {
                 formValid.ChildNameValid = false
                 formErrorMessage.ChildNameError = "Please enter a valid StudentName"
             }
@@ -117,7 +118,7 @@ class Form extends Component {
               break;
 
     }
-    if(formValid.age && formValid.firstName && formValid.lastName){
+    if(formValid.ParentNameValid && formValid.ChildNameValid && formValid.Email && formValid.DOB){
       formValid.buttonActive=true
     }
     else{
@@ -132,21 +133,21 @@ class Form extends Component {
     this.addData();
   }
 
-//   addData=()=>{
-//     console.log("2")
-//     Axios.post(postUrl,this.state)
-//     .then((response)=>{
-//       console.log("at then")
-//       console.log(response)
-//     this.setState({err:false,success:true,successmsg:"Successfully Submitted"})})
-//     .catch((err)=>{
-//       console.log("asasasa")
-//       console.log(err)
-//       console.log(err.response.data.message)
+  addData=()=>{
+    console.log("2")
+    Axios.post(postUrl,this.state.form)
+    .then((response)=>{
+      console.log("at then")
+      console.log(response)
+    this.setState({errorMessage:"",successMessage:response.data})})
+    .catch((err)=>{
+      console.log("asasasa")
+      console.log(err)
+      console.log(err.response.data.message)
       
-//       this.setState({err:true,success:false,errmsg:err.response.data.message})
-//     })
-//   }
+      this.setState({successMessage:"",errorMessage:err.response.data.message})
+    })
+  }
 
   render(){
   var {ParentName,ChildName,Grade,Country,Phone,Email,Code,DOB}=this.state.form;
@@ -155,7 +156,7 @@ class Form extends Component {
   return (
    /* <Model isOpen={this.props.isOpen} onRequestClose={()=>this.props.changeState()}  > */
    <div className="container-fluid">
-       {JSON.stringify(this.state)}
+     {JSON.stringify(this.state.form)}
    <div className="row">
    <div className="col-lg-6 col-md-6 d-none d-md-block image-container">
     
@@ -168,7 +169,7 @@ class Form extends Component {
             <div className="heading mb-4">
                 <h4>Welcome to Smaowl</h4>
             </div>
-            <form>
+            <form onSubmit={(e)=>this.onSubmit(e)}>
                 <div className="form-input">
                 <span><RiParentLine/></span>
                 <input type="text" name="ParentName" value={ParentName} placeholder="Parent Name" onChange={(e)=>this.handleChange(e)}/>
@@ -197,7 +198,7 @@ class Form extends Component {
                 </div>
                 <div className="form-input">
                 <span><TiContacts/></span>
-                <input type="number" name="Phone" value={Phone} min="0" placeholder="Contact" onChange={(e)=>this.handleChange(e)}/>
+                <input type="number" name="Phone" required value={Phone} min="0" placeholder="Contact" onChange={(e)=>this.handleChange(e)}/>
                 </div>
                 <div className="form-input">
                 <span><MdEmail/></span>
@@ -217,11 +218,13 @@ class Form extends Component {
                 </div>
                 <div className="form-input">
                 <span><RiLockPasswordLine/></span>
-                <input type="text" name="Code" value={Code} placeholder="Code" onChange={(e)=>this.handleChange(e)}/>
+                <input type="text" name="Code" required value={Code} placeholder="Code" onChange={(e)=>this.handleChange(e)}/>
                 </div>
                 <div className="text-center mb-3">
-                    <button type="submit" className="btn">Submit</button>
+                    <button type="submit" disabled={!this.state.formValid.buttonActive} className="btn">Submit</button>
                 </div>
+                  {this.state.errorMessage && <p className="text-danger">{this.state.errorMessage}</p>}
+                  {this.state.successMessage && <p className="text-success">{this.state.successMessage}</p>}
             </form>
        </div>
 
